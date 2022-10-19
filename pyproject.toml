@@ -1,0 +1,32 @@
+[build-system]
+dependencies = [
+    "pyjwt",
+    "pydantic[email]",
+    "sqlalchemy",
+    "aiohttp",
+    "awaits",
+    "grpc_requests",
+    "grpcio",
+    "loguru",
+    "redis>=3.5.3",
+    "redis-py-cluster",
+    "starlette",
+    "fastapi",
+    "redlock",
+    "pyDes",
+    "aioetcd3",
+    "pyyaml",
+    "requests",
+    "qiniu>=7.6.0",
+    "pydantic[dotenv]",
+    "pydantic",
+    "jinja2",
+    "aiomysql",
+    "pymysql",
+    "cos-python-sdk-v5",
+]
+requires = [
+    "setuptools>=42",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"

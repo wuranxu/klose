@@ -1,0 +1,6 @@
+include readme.md
+include klose/conf/*.env
+include klose/scripts/*.sh
+include klose/templates/*.html
+include klose/templates/markdown/*.md
+include klose/*.json
