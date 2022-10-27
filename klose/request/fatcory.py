@@ -19,6 +19,13 @@ class PityResponse(object):
         return result
 
     @staticmethod
+    def from_orm_dict(data, dto, include=(), exclude=()):
+        ans = dict()
+        for k, v in data.items():
+            ans[k] = PityResponse.from_orm(dto(), v, include, exclude)
+        return ans
+
+    @staticmethod
     def from_orm(obj, dto, include=(), exclude=()):
         for c in obj.__table__.columns:
             if (len(include) > 0 and c.name not in include) or c.name in exclude:
