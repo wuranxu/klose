@@ -37,7 +37,7 @@ setuptools.setup(
         "mysql-connector-python>=8.0.26"
     ],
     include_package_data=True,
-    version="0.0.60",
+    version="0.0.62",
     author="miro",
     author_email="619434176@qq.com",
     description="pity internal package",

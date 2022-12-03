@@ -3,7 +3,7 @@ import json
 from typing import Any
 
 from google.protobuf import json_format
-from google.protobuf.pyext._message import RepeatedScalarContainer
+from google.protobuf.pyext._message import RepeatedScalarContainer, RepeatedCompositeContainer
 from pydantic import BaseModel
 
 from klose.config import Config
@@ -39,10 +39,10 @@ class Interceptor(object):
             name = f[0].name
             if hasattr(f[1], "ListFields"):
                 val = Interceptor.parse_args(f[1])
-            elif isinstance(f[1], RepeatedScalarContainer):
+            elif isinstance(f[1], RepeatedScalarContainer) or isinstance(f[1], RepeatedCompositeContainer):
                 val = []
                 for x in f[1]:
-                    if hasattr(f[1], "ListFields"):
+                    if hasattr(x, "ListFields"):
                         val.append(Interceptor.parse_args(x))
                     else:
                         val.append(x)
