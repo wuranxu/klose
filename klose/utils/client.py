@@ -2,11 +2,13 @@
 """
 import asyncio
 import random
+from typing import Any
 
 from grpc_requests.aio import AsyncClient
 from loguru import logger
 
 from klose.config import Config
+from klose.excpetions.RpcError import RpcError
 from klose.utils.etcd import EtcdClient
 
 
@@ -48,3 +50,20 @@ class RpcClient(object):
                 logger.info(f"服务地址: {addr}可能已经宕机, 尝试更换节点~")
                 continue
         raise Exception(f"no available {service} service")
+
+    @staticmethod
+    async def invoke(client, method: str, args: Any):
+        """
+        调用client的参数并返回结果
+        :param client:
+        :param method:
+        :param args:
+        :return:
+        """
+        md = getattr(client, method, None)
+        if md is None:
+            raise RpcError(f"{method}方法不存在")
+        resp = await md(args)
+        if resp.get("code", 0) != 0:
+            raise RpcError(f"请求{method}方法出错: {resp.get('msg', 'unknown')}")
+        return resp.get("data")
