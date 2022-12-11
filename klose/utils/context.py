@@ -66,7 +66,7 @@ class Interceptor(object):
                     new_args[1] = arguments
                     new_args = tuple(new_args)
             except RpcError as e:
-                return self.response_model(code=101, msg=e)
+                return self.response_model(code=101, msg=str(e))
             except Exception as exc:
                 err = error_map(exc.errors()[0]["type"], exc.errors()[0].get("loc", ['unknown'])[-1],
                                 exc.errors()[0].get("msg")) if len(exc.errors()) > 0 else "参数解析失败"
