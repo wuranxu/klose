@@ -8,6 +8,7 @@ from pydantic import BaseModel
 
 from klose.config import Config
 from klose.excpetions.ParamsException import ParamsError
+from klose.excpetions.RpcError import RpcError
 from klose.request.fatcory import PityResponse
 from klose.request.request_pb2 import Response
 
@@ -64,6 +65,8 @@ class Interceptor(object):
                     arguments = self.model.parse_obj(Interceptor.parse_args(args[1]))
                     new_args[1] = arguments
                     new_args = tuple(new_args)
+            except RpcError as e:
+                return self.response_model(code=101, msg=e)
             except Exception as exc:
                 err = error_map(exc.errors()[0]["type"], exc.errors()[0].get("loc", ['unknown'])[-1],
                                 exc.errors()[0].get("msg")) if len(exc.errors()) > 0 else "参数解析失败"
@@ -92,9 +95,15 @@ class Context:
     @staticmethod
     def get_user(context):
         meta = dict(context.invocation_metadata())
-        data = base64.b64decode(meta.get("user")).decode("utf-8")
-        user = json.loads(data)
-        return UserInfo(**user)
+        user = meta.get("user")
+        if user is None:
+            raise RpcError("用户未登录")
+        try:
+            data = base64.b64decode(meta.get("user")).decode("utf-8")
+            user = json.loads(data)
+            return UserInfo(**user)
+        except Exception as e:
+            raise RpcError(f"登录信息解析失败: {e}")
 
     @staticmethod
     def parse_args(request, model):
